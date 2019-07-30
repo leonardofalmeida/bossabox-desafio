@@ -4,9 +4,25 @@ import Header from '../../components/Header/Header.component';
 import Searchbar from '../../components/SearchBar/Searchbar.component';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import CheckBox from '../../components/Checkbox/Checkbox.component';
+import toolsServices from '../../services/toolsServices';
 
 class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tools: []
+        }
+    }
+
+    async componentDidMount() {
+        const response = await toolsServices.findAllTools();
+        this.setState({
+            tools: [...response],
+        })
+    }
+
     render() {
+        const { state: { tools } } = this;
         return (
             <HomeContainer>
                 <HeaderContainer>
@@ -17,6 +33,9 @@ class Home extends Component {
                     <Searchbar></Searchbar>
                     <CheckBox></CheckBox>
                 </HeaderContainer>
+                <div>
+                    {tools.map(tool => <p>{tool.title}</p>)}
+                </div>
             </HomeContainer>
         );
     }
