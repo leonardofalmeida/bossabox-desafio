@@ -118,6 +118,14 @@ class Home extends Component {
 						)
 					}
 
+					{tools.length === 0
+						&& (
+							<div>
+								<h4>No tools found :(</h4>
+							</div>
+						)
+					}
+
 					<ContentContainer>
 						{tools.map(tool => (
 							<MyCard key={tool.id}>
