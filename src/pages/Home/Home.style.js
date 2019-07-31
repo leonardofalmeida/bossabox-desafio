@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { Link } from '@material-ui/core';
 
-export const HomeContainer = styled.div`
+export const Container = styled.div`
     min-height: 100vh;
     width: 100%;
     display: flex;
@@ -11,7 +12,7 @@ export const HomeContainer = styled.div`
 
 export const HeaderContainer = styled.header`
     width: 50%;
-    margin: 10px;
+    margin: 20px;
 `;
 
 export const Actions = styled.div`
@@ -30,4 +31,13 @@ export const SearchContainer = styled.div`
 export const ContentContainer = styled.section`
     width: 50%;
     margin: 10px;
+`;
+
+export const LinkTitle = styled(Link)`
+    font-size: 2em;
+`;
+
+export const HeaderCard = styled.div`
+    display: flex;
+    justify-content: space-between;
 `;
