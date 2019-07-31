@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, CircularProgress, Modal } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
 	Container, HeaderContainer, Actions, SearchContainer, ContentContainer, LinkTitle, HeaderCard,
@@ -10,6 +10,8 @@ import CheckBox from '../../components/Checkbox/Checkbox.component';
 import toolsServices from '../../services/toolsServices';
 import MyButton from '../../components/Button/Button.component';
 import MyCard from '../../components/Card/Card.component';
+import MyModal from '../../components/Modal/Modal.component';
+import Form from '../../components/Form/Form.component';
 
 class Home extends Component {
 	constructor(props) {
@@ -18,16 +20,28 @@ class Home extends Component {
 			tools: [],
 			search: '',
 			searchInTags: false,
+			loading: true,
+			isOpenModalAdd: false,
 		};
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
+		this.handleDeleteTool = this.handleDeleteTool.bind(this);
 	}
 
 	async componentDidMount() {
-		const response = await toolsServices.findAllTools();
-		this.setState({
-			tools: [...response],
-		});
+		this.loadTools();
+	}
+
+	loadTools = async () => {
+		try {
+			const response = await toolsServices.findAllTools();
+			this.setState({
+				tools: [...response.data],
+				loading: false,
+			});
+		} catch (error) {
+			alert(error);
+		}
 	}
 
 	handleInputChange = (event) => {
@@ -57,63 +71,90 @@ class Home extends Component {
 		});
 	}
 
+	handleDeleteTool = async (tool) => {
+		try {
+			await toolsServices.deleteTool(tool.id);
+			await this.loadTools();
+		} catch (error) {
+			alert(error);
+		}
+	}
+
 	render() {
 		const {
-			state: { tools },
+			state: { tools, loading, isOpenModalAdd },
 		} = this;
 		return (
-			<Container>
-				<HeaderContainer>
+			<>
+				<Container>
+					<HeaderContainer>
 
-					<Header title='VUTTR' subtitle='Very Useful Tools to Remember' />
-					<Actions>
-						<SearchContainer>
-							<Searchbar
-								handleInputChange={this.handleInputChange}
-								handleSearch={this.handleSearch}
-							/>
-							<CheckBox
-								handleInputChange={this.handleInputChange}
-								state={this.state}
-							/>
-						</SearchContainer>
+						<Header title='VUTTR' subtitle='Very Useful Tools to Remember' />
+						<Actions>
+							<SearchContainer>
+								<Searchbar
+									handleInputChange={this.handleInputChange}
+									handleSearch={this.handleSearch}
+								/>
+								<CheckBox
+									handleInputChange={this.handleInputChange}
+									state={this.state}
+								/>
+							</SearchContainer>
 
-						<MyButton size='medium' variant='contained' color='primary' name='+ Add' />
-					</Actions>
+							<MyButton size='medium' variant='contained' color='primary' name='+ Add' />
+						</Actions>
 
-				</HeaderContainer>
+					</HeaderContainer>
+					{loading
+						&& <CircularProgress />
+					}
 
-				<ContentContainer>
-					{tools.map(tool => (
-						<MyCard key={tool.id}>
+					{isOpenModalAdd
+						&& (
+							<MyModal isOpenModalAdd={isOpenModalAdd}>
+								<Form />
+							</MyModal>
+						)
+					}
 
-							<HeaderCard>
-								<LinkTitle
-									href={tool.link}
-									target='_blank'
-									rel='noopener'
-									underline='hover'
-								>
-									{tool.title}
-								</LinkTitle>
-								<MyButton size='small' name='Remove' color='secondary'>
-									<DeleteIcon fontSize='small' />
-								</MyButton>
-							</HeaderCard>
+					<ContentContainer>
+						{tools.map(tool => (
+							<MyCard key={tool.id}>
 
-							<Typography align='left' variant='h6'>
-								{tool.description}
-							</Typography>
+								<HeaderCard>
+									<LinkTitle
+										href={tool.link}
+										target='_blank'
+										rel='noopener'
+										underline='hover'
+									>
+										{tool.title}
+									</LinkTitle>
+									<MyButton
+										size='small'
+										name='Remove'
+										color='secondary'
+										onClick={() => this.handleDeleteTool(tool)}
+									>
+										<DeleteIcon fontSize='small' />
+									</MyButton>
+								</HeaderCard>
 
-							<Typography align='left' variant='body2'>
-								{tool.tags.map((tag, index) => <span key={index}>{`#${tag} `}</span>)}
-							</Typography>
+								<Typography align='left' variant='h6'>
+									{tool.description}
+								</Typography>
 
-						</MyCard>
-					))}
-				</ContentContainer>
+								<Typography align='left' variant='body2'>
+									{tool.tags.map((tag, index) => <span key={index}>{`#${tag} `}</span>)}
+								</Typography>
 
-			</Container>
+							</MyCard>
+						))}
+					</ContentContainer>
+
+				</Container>
+			</>
 		);
 	}
 }
