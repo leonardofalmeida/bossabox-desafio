@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
+import PropTypes from 'prop-types';
 import { ModalPosition } from './Modal.style';
 
 export default function MyModal({ isOpenModalAdd, children }) {
@@ -13,3 +14,8 @@ export default function MyModal({ isOpenModalAdd, children }) {
 		</ModalPosition>
 	);
 }
+
+Modal.propTypes = {
+	isOpenModalAdd: PropTypes.bool.isRequired,
+	children: PropTypes.node.isRequired,
+};

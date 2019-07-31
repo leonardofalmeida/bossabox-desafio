@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MyButton from '../Button/Button.component';
 
 export default function Form({ handleSubmit, handleChange }) {
@@ -22,3 +23,8 @@ export default function Form({ handleSubmit, handleChange }) {
 		</form>
 	);
 }
+
+Form.propTypes = {
+	handleSubmit: PropTypes.func.isRequired,
+	handleChange: PropTypes.func.isRequired,
+};
