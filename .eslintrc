@@ -1,21 +1,52 @@
 {
-  "extends": "airbnb-base",
-  "parserOptions": {
-    "ecmaVersion": 2017,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "env": {
+    "browser": true,
+    "jest": true
   },
+  "plugins": [
+    "react",
+    "import"
+  ],
   "rules": {
     "react/jsx-filename-extension": [
-      1,
+      "error",
       {
         "extensions": [
           ".js",
           ".jsx"
         ]
       }
-    ]
+    ],
+    "no-plusplus": [
+      2,
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
+    "react/jsx-indent": [
+      "error",
+      "tab"
+    ],
+    "react/jsx-indent-props": [
+      "error",
+      "tab"
+    ],
+    "jsx-quotes": [
+      "error",
+      "prefer-single"
+    ],
+    "no-tabs": "off",
+    "indent": [
+      "error",
+      "tab"
+    ],
+    "required": {
+      "some": [
+        "nesting",
+        "id"
+      ]
+    }
   }
 }
