@@ -1,12 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Title, Subtitle } from './Header.style';
 
-import { Titulo, Subtitulo } from './Header.style';
-
-export default function Header({ titulo, subtitulo }) {
-  return (
-    <>
-      <Titulo>{titulo}</Titulo>
-      <Subtitulo>{subtitulo}</Subtitulo>
-    </>
-  );
+export default function Header({ title, subtitle }) {
+	return (
+		<>
+			<Title>{title}</Title>
+			<Subtitle>{subtitle}</Subtitle>
+		</>
+	);
 }
+
+Header.propTypes = {
+	title: PropTypes.string.isRequired,
+	subtitle: PropTypes.string,
+};
+
+Header.defaultProps = {
+	subtitle: '',
+};

@@ -1,22 +1,31 @@
 import React from 'react';
-import { FormControlLabel, Checkbox } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import { InputCheckbox } from './Checkbox.style';
 
 // import { Container } from './styles';
 
 export default function CheckBox({ handleInputChange, state }) {
-    return (
-        <>
-            <InputCheckbox
-                type='checkbox'
-                color="primary"
-                name="searchInTags"
-                checked={state.searchInTags}
-                onChange={handleInputChange}
-                id='tags'
-                style={{ cursor: 'pointer' }}
-            />
-            <label style={{ cursor: 'pointer' }} htmlFor='tags'>Search only in tags</label>
-        </>
-    );
+	return (
+		<>
+			<label style={{ cursor: 'pointer' }} htmlFor='tags'>
+				<InputCheckbox
+					type='checkbox'
+					color='primary'
+					name='searchInTags'
+					checked={state.searchInTags}
+					onChange={handleInputChange}
+					id='tags'
+					style={{ cursor: 'pointer' }}
+				/>
+				Search only in tags
+			</label>
+		</>
+	);
 }
+
+CheckBox.propTypes = {
+	handleInputChange: PropTypes.func.isRequired,
+	state: PropTypes.shape({
+		searchInTags: PropTypes.bool.isRequired,
+	}).isRequired,
+};
