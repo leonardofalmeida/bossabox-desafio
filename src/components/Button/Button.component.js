@@ -3,10 +3,10 @@ import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 export default function MyButton({
-	variant, color, size, name, children,
+	variant, color, size, name, children, onClick,
 }) {
 	return (
-		<Button size={size} variant={variant} color={color}>
+		<Button onClick={onClick} size={size} variant={variant} color={color}>
 			{children}
 			{name}
 		</Button>
@@ -15,7 +15,7 @@ export default function MyButton({
 
 MyButton.propTypes = {
 	name: PropTypes.string.isRequired,
-	children: PropTypes.node.isRequired,
+	children: PropTypes.node,
 	variant: PropTypes.string,
 	color: PropTypes.string,
 	size: PropTypes.string,
@@ -25,4 +25,5 @@ MyButton.defaultProps = {
 	variant: 'text',
 	color: 'primary',
 	size: 'medium',
+	children: null,
 };
