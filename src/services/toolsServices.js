@@ -2,8 +2,8 @@ import api from '../api/api';
 
 export default {
 	async findAllTools() {
-		const response = await api.get('/tools');
-		return response;
+		const { data } = await api.get('/tools');
+		return data;
 	},
 
 	async findBySearch(search) {
@@ -18,6 +18,11 @@ export default {
 
 	async deleteTool(id) {
 		const response = await api.delete(`/tools/${id}`);
+		return response;
+	},
+
+	async saveTool(tool) {
+		const response = await api.post(`/tools`, tool);
 		return response;
 	},
 };
