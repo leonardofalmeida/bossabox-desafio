@@ -10,7 +10,7 @@ export const Container = styled.div`
     align-items: center;
 `;
 
-export const HeaderContainer = styled.header`
+export const Header = styled.header`
     width: 50%;
     margin: 20px;
 `;
@@ -21,14 +21,14 @@ export const Actions = styled.div`
     justify-content: space-between;
 `;
 
-export const SearchContainer = styled.div`
+export const SearchActions = styled.div`
     display:flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 `;
 
-export const ContentContainer = styled.section`
+export const Content = styled.section`
     width: 50%;
     margin: 10px;
 `;
