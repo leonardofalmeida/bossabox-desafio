@@ -2,28 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { InputCheckbox } from './Checkbox.style';
 
-// import { Container } from './styles';
+const Checkbox = ({ handleInputChange, state }) => (
+	<>
+		<label style={{ cursor: 'pointer' }} htmlFor='tags'>
+			<InputCheckbox
+				type='checkbox'
+				color='primary'
+				name='searchInTags'
+				checked={state.searchInTags}
+				onChange={handleInputChange}
+				id='tags'
+				style={{ cursor: 'pointer' }}
+			/>
+			Search only in tags
+		</label>
+	</>
+);
 
-export default function CheckBox({ handleInputChange, state }) {
-	return (
-		<>
-			<label style={{ cursor: 'pointer' }} htmlFor='tags'>
-				<InputCheckbox
-					type='checkbox'
-					color='primary'
-					name='searchInTags'
-					checked={state.searchInTags}
-					onChange={handleInputChange}
-					id='tags'
-					style={{ cursor: 'pointer' }}
-				/>
-				Search only in tags
-			</label>
-		</>
-	);
-}
+export default Checkbox;
 
-CheckBox.propTypes = {
+Checkbox.propTypes = {
 	handleInputChange: PropTypes.func.isRequired,
 	state: PropTypes.shape({
 		searchInTags: PropTypes.bool.isRequired,
