@@ -215,10 +215,12 @@ class Home extends Component {
 								<Searchbar
 									handleInputChange={this.handleInputChange}
 									handleSearch={this.handleSearch}
+									placeholder={'Search for a tool'}
 								/>
 								<Checkbox
 									handleInputChange={this.handleInputChange}
 									state={this.state}
+									label={'Search only in tags'}
 								/>
 							</SearchActions>
 

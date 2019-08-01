@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { InputCheckbox } from './Checkbox.style';
 
-const Checkbox = ({ handleInputChange, state }) => (
+const Checkbox = ({ handleInputChange, state, label }) => (
 	<>
 		<label style={{ cursor: 'pointer' }} htmlFor='tags'>
 			<InputCheckbox
@@ -14,7 +14,7 @@ const Checkbox = ({ handleInputChange, state }) => (
 				id='tags'
 				style={{ cursor: 'pointer' }}
 			/>
-			Search only in tags
+			{label}
 		</label>
 	</>
 );
@@ -26,4 +26,9 @@ Checkbox.propTypes = {
 	state: PropTypes.shape({
 		searchInTags: PropTypes.bool.isRequired,
 	}).isRequired,
+	label: PropTypes.string,
 };
+
+Checkbox.defaultProps = {
+	label: ''
+}

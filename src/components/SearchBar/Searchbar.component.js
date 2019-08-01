@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
 
 
-const Searchbar = ({ handleInputChange, handleSearch }) => (
+const Searchbar = ({ handleInputChange, handleSearch, placeholder }) => (
 	<form>
 		<Paper>
 			<TextField
-				placeholder='Search for a tool'
+				placeholder={placeholder}
 				id='outlined-simple-start-adornment'
 				name='search'
 				autoComplete='ava'
@@ -36,4 +36,9 @@ export default Searchbar;
 Searchbar.propTypes = {
 	handleInputChange: PropTypes.func.isRequired,
 	handleSearch: PropTypes.func.isRequired,
+	placeholder: PropTypes.string,
+};
+
+Searchbar.defaultProps = {
+	placeholder: ''
 };
