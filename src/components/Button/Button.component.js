@@ -29,5 +29,3 @@ MyButton.defaultProps = {
 	children: null,
 	onClick: () => { },
 };
-
-rcs
