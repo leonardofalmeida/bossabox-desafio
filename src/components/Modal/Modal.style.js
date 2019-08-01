@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import Modal from '@material-ui/core/Modal';
+import Dialog from '@material-ui/core/Dialog';
 
-export const ModalPosition = styled(Modal)`
-    display:flex;
-    justify-content:center;
-    align-items: center;
+export const ModalPosition = styled(Dialog)`
+
 `;

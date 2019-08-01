@@ -3,12 +3,13 @@ import Modal from '@material-ui/core/Modal';
 import PropTypes from 'prop-types';
 import { ModalPosition } from './Modal.style';
 
-export default function MyModal({ isOpenModalAdd, children }) {
+export default function MyModal({ confirmDelete, handleClose, children }) {
 	return (
 		<ModalPosition
-			aria-labelledby='simple-modal-title'
-			aria-describedby='simple-modal-description'
-			open={isOpenModalAdd}
+			open={confirmDelete}
+			onClose={handleClose}
+			aria-labelledby="alert-dialog-title"
+			aria-describedby="alert-dialog-description"
 		>
 			{children}
 		</ModalPosition>
