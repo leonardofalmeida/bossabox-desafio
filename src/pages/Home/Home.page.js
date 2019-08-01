@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, CircularProgress, Modal } from '@material-ui/core';
+import { Typography, CircularProgress, TextField } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
 	Container, HeaderContainer, Actions, SearchContainer, ContentContainer, LinkTitle, HeaderCard,
@@ -10,8 +10,12 @@ import CheckBox from '../../components/Checkbox/Checkbox.component';
 import toolsServices from '../../services/toolsServices';
 import MyButton from '../../components/Button/Button.component';
 import MyCard from '../../components/Card/Card.component';
-import MyModal from '../../components/Modal/Modal.component';
-import Form from '../../components/Form/Form.component';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import { TOOL_MODEL } from '../../constants/models';
 
 class Home extends Component {
 	constructor(props) {
@@ -21,7 +25,10 @@ class Home extends Component {
 			search: '',
 			searchInTags: false,
 			loading: true,
-			isOpenModalAdd: false,
+			openModalRemove: false,
+			openModalAddTool: false,
+			idRemoveTool: null,
+			tool: TOOL_MODEL,
 		};
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSearch = this.handleSearch.bind(this);
@@ -33,14 +40,28 @@ class Home extends Component {
 	}
 
 	loadTools = async () => {
+		this.setLoading(true);
 		try {
 			const response = await toolsServices.findAllTools();
 			this.setState({
-				tools: [...response.data],
+				tools: [...response],
+			});
+			this.setLoading(false);
+		} catch (error) {
+			this.setLoading(false);
+			alert(error);
+		}
+	}
+
+	setLoading = (loading = true) => {
+		if (loading === true) {
+			this.setState({
+				loading: true,
+			});
+		} else {
+			this.setState({
 				loading: false,
 			});
-		} catch (error) {
-			alert(error);
 		}
 	}
 
@@ -53,6 +74,19 @@ class Home extends Component {
 			[name]: value,
 		});
 	};
+
+	handleFormsChange = (event) => {
+		const { target } = event;
+		const { name } = target;
+		const value = target.value;
+
+		this.setState({
+			tool: {
+				...this.state.tool,
+				[name]: value,
+			}
+		});
+	}
 
 	handleSearch = async () => {
 		const { search, searchInTags } = this.state;
@@ -71,18 +105,76 @@ class Home extends Component {
 		});
 	}
 
-	handleDeleteTool = async (tool) => {
+	handleDeleteTool = async () => {
+		const { idRemoveTool } = this.state;
+
+		this.setLoading(true);
+		this.handleCloseModalRemove();
 		try {
-			await toolsServices.deleteTool(tool.id);
+
+			await toolsServices.deleteTool(idRemoveTool);
 			await this.loadTools();
+			this.setLoading(false);
+
 		} catch (error) {
+
+			this.setLoading(false);
 			alert(error);
+
 		}
+	}
+
+	handleSubmit = async () => {
+		const { tool } = this.state;
+
+		let cloneTool = {
+			...tool,
+		}
+
+		/* 
+			Retira espaços em brancos no final e do começo com o trim
+			Separa a string, por espaço em branco
+			Filtra as strings que vieram como "", no caso do usuário
+			ter dado mais de um espaço
+		*/
+		if (cloneTool.tags.length !== 0) {
+			cloneTool.tags = cloneTool.tags.trim().split(" ").filter(item => item !== "");
+		}
+
+		const response = await toolsServices.saveTool(cloneTool);
+		console.log(response);
+		this.handleCloseModalAddTool();
+		this.loadTools();
+	}
+
+	handleOpenModalRemove = (id) => {
+		this.setState({
+			openModalRemove: true,
+			idRemoveTool: id,
+		});
+	}
+
+	handleOpenModalAddTool = () => {
+		this.setState({
+			openModalAddTool: true,
+		});
+	}
+
+	handleCloseModalRemove = () => {
+		this.setState({
+			openModalRemove: false,
+		});
+	}
+
+	handleCloseModalAddTool = () => {
+		this.setState({
+			openModalAddTool: false,
+		});
 	}
 
 	render() {
 		const {
-			state: { tools, loading, isOpenModalAdd },
+			state: { tools, loading, openModalRemove, openModalAddTool },
 		} = this;
 		return (
 			<>
@@ -102,7 +194,7 @@ class Home extends Component {
 								/>
 							</SearchContainer>
 
-							<MyButton size='medium' variant='contained' color='primary' name='+ Add' />
+							<MyButton size='medium' variant='contained' color='primary' name='+ Add' onClick={this.handleOpenModalAddTool} />
 						</Actions>
 
 					</HeaderContainer>
@@ -110,13 +202,19 @@ class Home extends Component {
 						&& <CircularProgress />
 					}
 
-					{isOpenModalAdd
-						&& (
-							<MyModal isOpenModalAdd={isOpenModalAdd}>
-								<Form />
-							</MyModal>
-						)
-					}
+					<ModalAddTool
+						openModalAddTool={openModalAddTool}
+						handleCloseModalAddTool={this.handleCloseModalAddTool}
+						handleFormsChange={this.handleFormsChange}
+						handleSubmit={this.handleSubmit}
+					>
+					</ModalAddTool>
+
+					<ModalConfirmDelete
+						openModalRemove={openModalRemove}
+						handleDeleteTool={this.handleDeleteTool}
+						handleCloseModalRemove={this.handleCloseModalRemove}
+					></ModalConfirmDelete>
 
 					{tools.length === 0
 						&& (
@@ -143,7 +241,7 @@ class Home extends Component {
 										size='small'
 										name='Remove'
 										color='secondary'
-										onClick={() => this.handleDeleteTool(tool)}
+										onClick={() => this.handleOpenModalRemove(tool.id)}
 									>
 										<DeleteIcon fontSize='small' />
 									</MyButton>
@@ -166,5 +264,79 @@ class Home extends Component {
 		);
 	}
 }
+
+const ModalConfirmDelete = ({ openModalRemove, handleDeleteTool, handleCloseModalRemove, handleSubmit }) => (
+	<Dialog open={openModalRemove}>
+		<DialogTitle id="alert-dialog-title">
+			{'X Remove tool'}
+		</DialogTitle>
+		<DialogContent>
+			<DialogContentText id="alert-dialog-description">
+				Are you sure you want to remove tool?
+          	</DialogContentText>
+		</DialogContent>
+		<DialogActions>
+			<MyButton onClick={handleCloseModalRemove} color="primary">
+				Cancel
+          	</MyButton>
+			<MyButton onClick={handleDeleteTool} color="primary" autoFocus>
+				Yes, remove
+          	</MyButton>
+		</DialogActions>
+	</Dialog>
+);
+
+const ModalAddTool = ({ openModalAddTool, handleCloseModalAddTool, handleFormsChange, handleSubmit }) => (
+	<Dialog open={openModalAddTool}>
+		<DialogTitle id="alert-dialog-title">
+			{'+ Add tool'}
+		</DialogTitle>
+		<DialogContent>
+			<TextField
+				autoFocus
+				margin="dense"
+				id="title"
+				label="Tool name"
+				name="title"
+				fullWidth
+				onChange={handleFormsChange}
+			/>
+			<TextField
+				margin="dense"
+				id="link"
+				label="Tool link"
+				name="link"
+				fullWidth
+				onChange={handleFormsChange}
+			/>
+			<TextField
+				margin="dense"
+				id="description"
+				label="Tool description"
+				name="description"
+				multiline
+				rowsMax="5"
+				fullWidth
+				onChange={handleFormsChange}
+			/>
+			<TextField
+				margin="dense"
+				id="tags"
+				label="Tags"
+				name="tags"
+				fullWidth
+				onChange={handleFormsChange}
+			/>
+		</DialogContent>
+		<DialogActions>
+			<MyButton variant="outlined" onClick={handleCloseModalAddTool} color="secondary" autoFocus>
+				Cancel
+          	</MyButton>
+			<MyButton onClick={handleSubmit} variant="contained" color="primary" autoFocus>
+				ADD TOOL
+          	</MyButton>
+		</DialogActions>
+	</Dialog>
+);
 
 export default Home;
