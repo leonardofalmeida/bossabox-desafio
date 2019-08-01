@@ -13,6 +13,8 @@ export default function Searchbar({ handleInputChange, handleSearch }) {
 					name='search'
 					autoComplete='ava'
 					onChange={handleInputChange}
+					/* Desabilita o enter na pesquisa */
+					onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
