@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 const MyButton = ({
 	variant, color, size, name, children, onClick,
 }) => (
-	<Button onClick={onClick} size={size} variant={variant} color={color}>
-		{children}
-		{name}
-	</Button>
-);
+		<Button onClick={onClick} size={size} variant={variant} color={color}>
+			{children}
+			{name}
+		</Button>
+	);
 
 export default MyButton;
 
@@ -29,3 +29,5 @@ MyButton.defaultProps = {
 	children: null,
 	onClick: () => { },
 };
+
+rcs
